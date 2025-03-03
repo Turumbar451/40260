@@ -4,3 +4,6 @@
 [submodule "POEMA"]
 	path = POEMA
 	url = https://github.com/Turumbar451/POEMA.git
+[submodule "ecomerce"]
+	path = ecomerce
+	url = https://github.com/Turumbar451/ecomerce.git
