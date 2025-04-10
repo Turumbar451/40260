@@ -1,34 +1,28 @@
 <?xml version="1.0"?>
 <!DOCTYPE alumnos [
     <!ELEMENT alumnos (alumno*)>
-    <!ELEMENT alumno (nombre, apellido, curso)>
+    <!ELEMENT alumno (nombre, nacimiento)>
     <!ELEMENT nombre (#PCDATA)>
     <!ELEMENT apellido (#PCDATA)>
     <!ELEMENT curso (#PCDATA)>
+    <!ELEMENT nacimiento (#PCDATA)>
+    
 
     <!ATTLIST alumno 
-        id ID #REQUIRED
-        edad CDATA #IMPLIED
-        becado (si|no) "no">
+    id ID #REQUIRED
+    edad CDATA #IMPLIED
+    becado (si|no) "no">
 ]>
 
+
+
 <alumnos>
-    <alumno id="1" edad="18" becado="si">
-        <nombre>Goku</nombre>
-        <apellido>Son</apellido>
-        <curso>3º ESO</curso>
+    <alumno id="alumno1" edad="18" becado="no">
+        <nombre>Eren Jaeger</nombre>
+        <nacimiento>1835-03-30</nacimiento>
     </alumno>
-
-    <alumno id="2" edad="19" becado="si">
-        <nombre>Vegeta</nombre>
-        <apellido>Príncipe de los Saiyajin</apellido>
-        <curso>4º ESO</curso>
-    </alumno>
-
-    <alumno id="3" edad="18" becado="no">
-        <nombre>Bulma</nombre>
-        <apellido>Brief</apellido>
-        <curso>2º Bachillerato</curso>
+    <alumno id="alumno2" edad="18" becado="no">
+        <nombre>Mikasa Ackerman</nombre>
+        <nacimiento>1837-02-10</nacimiento>
     </alumno>
 </alumnos>
-

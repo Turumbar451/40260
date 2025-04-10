@@ -1,0 +1,11 @@
+<alumnos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="alumnos.xsd">
+    <alumno>
+        <nombre>Eren Jaeger</nombre>
+        <nacimiento>1835-02-10</nacimiento>
+    </alumno>
+    <alumno>
+        <nombre>Mikasa Ackerman</nombre>
+        <nacimiento>1835-02-10</nacimiento>
+    </alumno>
+</alumnos>
