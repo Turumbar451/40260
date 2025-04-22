@@ -1,39 +1,185 @@
 <!DOCTYPE html>
-<html lang="mx">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="widht=device-width, initial-scale=1.0">
-        <title>Document</title>
+<html lang="es">
 
-    </head>
-    <body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Tabla de Alumnos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
 
-        <button onclick="loadXMLDoc()">Ejecutar funcincion</button>
-    <table id="demo"></table>
-<script>
-function loadXMLDoc() {
-  const xhttp = new XMLHttpRequest();
-  xhttp.onload = function() {
-    const xmlDoc = xhttp.responseXML;
-    const cd = xmlDoc.getElementsByTagName("CD");
-    myFunction(cd);
-  }
-  xhttp.open("GET", "cd_catalog.xml");
-  xhttp.send();
-}
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
 
-function myFunction(cd) {
-  let table="<tr><th>Artist</th><th>Title</th></tr>";
-  for (let i = 0; i < cd.length; i++) {
-    table += "<tr><td>" +
-    cd[i].getElementsByTagName("ARTIST")[0].childNodes[0].nodeValue +
-    "</td><td>" +
-    cd[i].getElementsByTagName("TITLE")[0].childNodes[0].nodeValue +
-    "</td></tr>";
-  }
-  document.getElementById("demo").innerHTML = table;
-}
-</script>
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
 
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .loading {
+      display: none;
+      margin-left: 10px;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+
+    .no-data {
+      font-style: italic;
+      color: #888;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Listado de Alumnos</h1>
+  <button id="loadButton">Cargar Datos</button>
+  <span id="loading" class="loading">Cargando...</span>
+  <div id="error" class="error"></div>
+  <table id="alumnosTable">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Fecha de Nacimiento</th>
+        <th>Correo</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loadButton = document.getElementById('loadButton');
+      const loadingIndicator = document.getElementById('loading');
+      const errorContainer = document.getElementById('error');
+      const tableBody = document.getElementById('tableBody');
+
+      loadButton.addEventListener('click', fetchAlumnos);
+
+      function fetchAlumnos() {
+        // Mostrar indicador de carga
+        loadingIndicator.style.display = 'inline';
+        errorContainer.textContent = '';
+        tableBody.innerHTML = '';
+
+        // Usar Fetch API en lugar de XMLHttpRequest
+        fetch('alumnos.xml')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`Error de red: ${response.status}`);
+            }
+            return response.text();
+          })
+          .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+          .then(data => {
+            displayAlumnos(data);
+          })
+          .catch(error => {
+            errorContainer.textContent = `Error al cargar los datos: ${error.message}`;
+            console.error('Error:', error);
+          })
+          .finally(() => {
+            loadingIndicator.style.display = 'none';
+          });
+      }
+
+      function displayAlumnos(xmlDoc) {
+        const alumnos = xmlDoc.getElementsByTagName("alumno");
+
+        if (alumnos.length === 0) {
+          errorContainer.textContent = 'No se encontraron datos de alumnos';
+          return;
+        }
+
+        let tableContent = '';
+
+        for (let i = 0; i < alumnos.length; i++) {
+          const alumnoElement = alumnos[i];
+          const nombre = getElementTextContent(alumnoElement, "nombre");
+          const nacimiento = getElementTextContent(alumnoElement, "nacimiento");
+
+          // Obtener el atributo correo si existe
+          const correo = alumnoElement.getAttribute("correo") || "";
+
+          tableContent += `
+                        <tr>
+                            <td>${nombre}</td>
+                            <td>${formatDate(nacimiento)}</td>
+                            <td>${correo || '<span class="no-data">No disponible</span>'}</td>
+                        </tr>
+                    `;
+        }
+
+        tableBody.innerHTML = tableContent;
+      }
+
+      // Función auxiliar para obtener contenido de texto de elementos XML
+      function getElementTextContent(parent, tagName) {
+        const elements = parent.getElementsByTagName(tagName);
+        if (elements.length > 0 && elements[0].firstChild) {
+          return elements[0].firstChild.nodeValue;
+        }
+        return "";
+      }
+
+      // Función para formatear fechas (asumiendo formato ISO YYYY-MM-DD)
+      function formatDate(dateStr) {
+        if (!dateStr) return "";
+
+        try {
+          const date = new Date(dateStr);
+          if (isNaN(date.getTime())) return dateStr;
+
+          return date.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          });
+        } catch (e) {
+          return dateStr;
+        }
+      }
+    });
+  </script>
 </body>
+
 </html>
