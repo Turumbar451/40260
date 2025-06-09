@@ -7,3 +7,6 @@
 [submodule "ecomerce"]
 	path = ecomerce
 	url = https://github.com/Turumbar451/ecomerce.git
+[submodule "ordinario-ftw"]
+	path = ordinario-ftw
+	url = https://github.com/Turumbar451/ordinario-ftw.git
